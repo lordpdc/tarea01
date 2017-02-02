@@ -22,8 +22,10 @@ class ProductsTableSeeder extends Seeder
             factory(\App\Product::class, 3)->create(['seller_id' => $seller->id])->each(
                 function($product) use ($tags){
                 factory(\App\Review::class, 10)->create(['product_id' => $product->id]);
-                $product->tags()->attach($tags[rand(0,4)]->id);
-                $product->tags()->attach($tags[rand(0,4)]->id);
+                $tag_ids=array(1,2,3,4,0);
+                $random=array_rand($tag_ids,2);
+                $product->tags()->attach($tags[$tag_ids[$random[0]]]->id);
+                $product->tags()->attach($tags[$tag_ids[$random[1]]]->id);
             });
         });
     }
