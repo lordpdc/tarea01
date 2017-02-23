@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Seller;
+use App\Address;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class SellerController extends Controller
 {
@@ -14,7 +16,7 @@ class SellerController extends Controller
      */
     public function index()
     {
-        //
+        return Response::json(Seller::all());
     }
 
     /**
@@ -25,6 +27,7 @@ class SellerController extends Controller
     public function create()
     {
         //
+        Seller::saved();
     }
 
     /**
@@ -35,7 +38,15 @@ class SellerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required',
+            'last_name' => 'required',
+        ]);
+        $address=Address::create();
+        $attributes = $request->all(); //Obtener atributos
+        $attributes['address_id']= $address->id;
+        $seller = Seller::create($attributes); //Crear
+        return Response::json($seller);
     }
 
     /**
@@ -46,7 +57,7 @@ class SellerController extends Controller
      */
     public function show(Seller $seller)
     {
-        //
+        return $seller;
     }
 
     /**
@@ -57,7 +68,7 @@ class SellerController extends Controller
      */
     public function edit(Seller $seller)
     {
-        //
+//
     }
 
     /**
@@ -70,6 +81,13 @@ class SellerController extends Controller
     public function update(Request $request, Seller $seller)
     {
         //
+        $this->validate($request, [
+            'name' => 'required',
+            'last_name' => 'required',
+        ]);
+        $attributes = $request->all();
+        $seller->update($attributes);//Actualizar información
+        return $seller;
     }
 
     /**
@@ -78,8 +96,28 @@ class SellerController extends Controller
      * @param  \App\Seller  $seller
      * @return \Illuminate\Http\Response
      */
+
     public function destroy(Seller $seller)
     {
-        //
+        $address_id=$seller->address_id;
+        $seller->delete();
+        Address::destroy($address_id);// le puse delete oncascade pero no funciona
+        return Response::json([],200);
+    }
+
+    public function addAddress(Request $request,Seller $seller)
+    {
+        //aki iria los validate respectivos
+        $attributes = $request->all();
+        $address=Address::find($seller->address_id);
+        $address->update($attributes);//Actualizar información pendiente refactor para que cree
+        return $address;
+    }
+    public function updateAddress(Request $request,Seller $seller)
+    {
+        $attributes = $request->all();
+        $address=Address::find($seller->address_id);
+        $address->update($attributes);//Actualizar información
+        return $address;
     }
 }

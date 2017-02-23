@@ -22,7 +22,8 @@ class CreateSellersTable extends Migration
 
             $table->foreign('address_id')
                 ->references('id')
-                ->on('addresses');
+                ->on('addresses')
+                ->onDelete('cascade');
         });
     }
 

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use App\Seller;
+use App\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+
 
 class ProductController extends Controller
 {
@@ -15,6 +19,7 @@ class ProductController extends Controller
     public function index()
     {
         //
+        return Response::json(Product::all());
     }
 
     /**
@@ -25,6 +30,7 @@ class ProductController extends Controller
     public function create()
     {
         //
+        Product::saved();
     }
 
     /**
@@ -36,6 +42,14 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'name' => 'required',
+            'price' => 'required',
+        ]);
+        $attributes = $request->all(); //Obtener atributos
+        $product = Product::create($attributes); //Crear
+
+        return Response::json($product);
     }
 
     /**
@@ -47,6 +61,10 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //
+        $seller=Seller::find($product->seller_id);
+        $product["name_seller"]=$seller->name;
+
+        return $product;
     }
 
     /**
