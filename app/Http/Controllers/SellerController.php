@@ -89,6 +89,17 @@ class SellerController extends Controller
         $seller->update($attributes);//Actualizar información
         return $seller;
     }
+    public function partialUpdate(Request $request, Seller $seller)
+    {
+        //
+        $this->validate($request, [
+            'name' => 'string',
+            'last_name' => 'string',
+        ]);
+        $attributes = $request->all();
+        $seller->update($attributes);//Actualizar información
+        return $seller;
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -100,24 +111,41 @@ class SellerController extends Controller
     public function destroy(Seller $seller)
     {
         $address_id=$seller->address_id;
-        $seller->delete();
-        Address::destroy($address_id);// le puse delete oncascade pero no funciona
+        //$seller->delete();// le puse delete oncascade pero no funciona
+        Address::destroy($address_id);
+
         return Response::json([],200);
     }
 
     public function addAddress(Request $request,Seller $seller)
     {
-        //aki iria los validate respectivos
+        //aunque no los pidio agrege validate
+        $this->validate($request, [
+            'city' => 'required|string',
+            'state'=> 'required|string',
+            'country'=> 'required|string',
+            'address'=> 'required|string',
+            'zip_code'=> 'required|numeric',
+        ]);
         $attributes = $request->all();
         $address=Address::find($seller->address_id);
-        $address->update($attributes);//Actualizar información pendiente refactor para que cree
+        $address->update($attributes);// refactor pendiente para que cree y no actualize
         return $address;
     }
-    public function updateAddress(Request $request,Seller $seller)
+    public function updateAddress(Request $request,Seller $seller, Address $address)
     {
+        $this->validate($request, [
+            'city' => 'required|string',
+            'state'=> 'required|string',
+            'country'=> 'required|string',
+            'address'=> 'required|string',
+            'zip_code'=> 'required|numeric',
+        ]);
         $attributes = $request->all();
-        $address=Address::find($seller->address_id);
-        $address->update($attributes);//Actualizar información
+
+        if($address->id == $seller->address_id) {
+            $address->update($attributes);
+        }
         return $address;
     }
 }

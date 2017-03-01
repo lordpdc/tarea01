@@ -24,6 +24,7 @@ class CreateSellersTable extends Migration
                 ->references('id')
                 ->on('addresses')
                 ->onDelete('cascade');
+
         });
     }
 

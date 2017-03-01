@@ -131,6 +131,18 @@ class ProductController extends Controller
 
         return $product;
     }
+    public function partialUpdate(Request $request, Product $product)
+    {
+        $this->validate($request, [
+            'name' => 'string',
+            'price' => 'min:0.1|numeric',
+            'description'=>'string',
+            'seller_id'=>'exists:sellers,id',
+        ]);
+        $attributes = $request->all(); //Obtener atributos
+        $product->update($attributes); //Crear
+        return $product;
+    }
 
 
     /**
