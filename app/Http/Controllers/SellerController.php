@@ -39,8 +39,8 @@ class SellerController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
-            'last_name' => 'required',
+            'name' => 'required|string',
+            'last_name' => 'required|string',
         ]);
         $address=Address::create();
         $attributes = $request->all(); //Obtener atributos
@@ -82,8 +82,8 @@ class SellerController extends Controller
     {
         //
         $this->validate($request, [
-            'name' => 'required',
-            'last_name' => 'required',
+            'name' => 'required|string',
+            'last_name' => 'required|string',
         ]);
         $attributes = $request->all();
         $seller->update($attributes);//Actualizar información

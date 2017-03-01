@@ -12,7 +12,7 @@ class CreateProductTagTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {-
         Schema::create('product_tag', function (Blueprint $table) {
 
             $table->integer('product_id')->unsigned();
@@ -20,7 +20,8 @@ class CreateProductTagTable extends Migration
 
             $table->foreign('product_id')
                 ->references('id')
-                ->on('products');
+                ->on('products')
+                ->onDelete('cascade');
             $table->foreign('tag_id')
                 ->references('id')
                 ->on('tags');
